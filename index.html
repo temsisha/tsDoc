@@ -1,510 +1,460 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Top Spin FE Wrapper Protocol documentation" />
-  <title>Top Spin FE Wrapper Protocol</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <title>StreamVault — Watch What Matters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #080808;
+      --surface: #101010;
+      --card: #161616;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0ece4;
+      --muted: #777770;
+      --accent: #e5383b;
+      --accent2: #ff6b6b;
+      --gold: #f5c518;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 58px;
+      background: rgba(8,8,8,0.96);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+    }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.9rem; letter-spacing: 0.06em; color: var(--accent); text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.8rem; font-weight: 500; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-search {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.35rem 0.8rem;
+    }
+    .nav-search input { background: transparent; border: none; outline: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.82rem; width: 170px; }
+    .nav-search input::placeholder { color: var(--muted); }
+
+    /* HERO */
+    .hero {
+      position: relative; height: 560px;
+      display: flex; align-items: flex-end;
+      padding: 0 2.5rem 3.5rem; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(to right, rgba(8,8,8,0.95) 35%, rgba(8,8,8,0.4) 70%, rgba(8,8,8,0.1) 100%),
+        linear-gradient(to top, rgba(8,8,8,1) 0%, rgba(8,8,8,0.2) 40%, transparent 70%),
+        url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1400&q=80') center/cover no-repeat;
+    }
+    .hero-content { position: relative; max-width: 560px; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(229,56,59,0.15); border: 1px solid rgba(229,56,59,0.3);
+      color: var(--accent2); font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.09em; text-transform: uppercase;
+      padding: 0.3rem 0.8rem; border-radius: 4px; margin-bottom: 1rem;
+    }
+    .hero-tag::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3.2rem,6vw,5.2rem); line-height: 0.92; letter-spacing: 0.02em; color: #fff; margin-bottom: 1rem; }
+    .hero-meta { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+    .imdb-badge { background: var(--gold); color: #000; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 3px; letter-spacing: 0.02em; }
+    .hero-meta span { font-size: 0.82rem; color: var(--muted); }
+    .hero-meta .sep { color: rgba(255,255,255,0.15); }
+    .hero p { font-size: 0.9rem; color: rgba(240,236,228,0.7); font-weight: 300; line-height: 1.75; max-width: 430px; margin-bottom: 1.6rem; }
+    .hero-btns { display: flex; gap: 0.8rem; }
+    .btn-play {
+      display: flex; align-items: center; gap: 0.6rem;
+      background: #fff; color: #000; font-weight: 600; font-size: 0.88rem;
+      padding: 0.65rem 1.4rem; border-radius: 6px; border: none; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-play:hover { background: rgba(255,255,255,0.85); }
+    .play-tri { width:0; height:0; border-top:6px solid transparent; border-bottom:6px solid transparent; border-left:11px solid #000; }
+    .btn-info {
+      display: flex; align-items: center; gap: 0.6rem;
+      background: rgba(255,255,255,0.12); color: #fff; font-weight: 500; font-size: 0.88rem;
+      padding: 0.65rem 1.4rem; border-radius: 6px; border: none; cursor: pointer;
+      transition: background 0.2s; backdrop-filter: blur(8px);
+    }
+    .btn-info:hover { background: rgba(255,255,255,0.2); }
+
+    /* FILTER BAR */
+    .filter-section { padding: 1.8rem 2.5rem 0.6rem; }
+    .filter-bar { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; }
+    .filter-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-right: 0.3rem; }
+    .filter-btn {
+      background: transparent; border: 1px solid var(--border); color: var(--muted);
+      font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
+      padding: 0.38rem 1rem; border-radius: 20px; cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: rgba(255,255,255,0.22); color: var(--text); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    /* SECTIONS */
+    .section { padding: 2rem 2.5rem; }
+    .section-header { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.3rem; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.45rem; letter-spacing: 0.04em; color: #fff; }
+    .section-count { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* CARDS */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.9rem; }
+
+    .movie-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; overflow: hidden; cursor: pointer;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      display: flex; flex-direction: column;
+    }
+    .movie-card:hover { transform: translateY(-5px) scale(1.02); border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+
+    .card-poster {
+      position: relative; aspect-ratio: 2/3; overflow: hidden;
+      background: #111;
+    }
+    .card-poster img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .movie-card:hover .card-poster img { transform: scale(1.05); }
+    .poster-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(22,22,22,0.95) 0%, rgba(22,22,22,0.3) 40%, transparent 70%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .movie-card:hover .poster-overlay { opacity: 1; }
+
+    .card-badges { position: absolute; top: 0.5rem; left: 0.5rem; right: 0.5rem; display: flex; justify-content: space-between; }
+    .badge { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.22rem 0.55rem; border-radius: 3px; }
+    .badge-genre { background: rgba(8,8,8,0.8); border: 1px solid rgba(255,255,255,0.1); color: var(--muted); }
+    .badge-imdb { background: var(--gold); color: #000; }
+
+    .hover-play {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .movie-card:hover .hover-play { opacity: 1; }
+    .play-circle {
+      width: 48px; height: 48px; background: rgba(229,56,59,0.9); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .play-circle-arrow { width:0; height:0; border-top:9px solid transparent; border-bottom:9px solid transparent; border-left:16px solid #fff; margin-left:3px; }
+
+    .card-body { padding: 0.75rem 0.85rem 0.9rem; flex: 1; display: flex; flex-direction: column; }
+    .card-title { font-size: 0.88rem; font-weight: 600; color: #fff; margin-bottom: 0.3rem; line-height: 1.3; }
+    .card-year-dur { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .card-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.55; font-weight: 300; flex: 1; }
+
+    /* EMPTY */
+    .empty { grid-column: 1/-1; text-align: center; padding: 4rem 2rem; color: var(--muted); }
+    .empty-icon { font-size: 2.8rem; margin-bottom: 0.8rem; opacity: 0.4; }
+    .empty h3 { font-size: 1rem; color: var(--text); margin-bottom: 0.4rem; }
+    .empty p { font-size: 0.82rem; }
+
+    /* SEARCH RESULTS */
+    .hidden { display: none !important; }
+
+    /* FOOTER */
+    footer { margin-top: 4rem; padding: 2rem 2.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="brand" href="#welcome" aria-label="Top Spin documentation home">
-        <span class="brand-mark">TS</span>
-        <span class="brand-name">Top Spin</span>
-        <span class="brand-divider"></span>
-        <span class="brand-docs">Docs</span>
-      </a>
 
-      <button class="search-trigger" id="searchTrigger" type="button" aria-label="Search documentation">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
-        <span>Search documentation...</span>
-        <kbd>⌘ K</kbd>
-      </button>
-
-      <div class="topbar-actions">
-        <span class="version">v4.5</span>
-        <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle theme">
-          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
-          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
-        </button>
-        <button class="mobile-menu-button" id="mobileMenuButton" type="button" aria-label="Open navigation">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
+<nav>
+  <a href="#" class="logo">StreamVault</a>
+  <ul class="nav-links">
+    <li><a href="#">Movies</a></li>
+    <li><a href="#">TV Shows</a></li>
+    <li><a href="#">New & Hot</a></li>
+    <li><a href="#">My List</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-search">
+      <span style="color:var(--muted);font-size:1rem;">⌕</span>
+      <input type="text" id="search-input" placeholder="Search titles, genres…" />
     </div>
-  </header>
+  </div>
+</nav>
 
-  <div class="docs-shell">
-    <aside class="sidebar" id="sidebar">
-      <nav class="sidebar-nav" aria-label="Documentation navigation">
-        <div class="nav-group">
-          <div class="nav-label">Getting started</div>
-          <a class="nav-item active" href="#welcome">Welcome</a>
-          <a class="nav-item" href="#overview">Integration overview</a>
-          <a class="nav-item" href="#quick-start">Quick start</a>
-          <a class="nav-item" href="#initialization">Initialization flow</a>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Featured Tonight</div>
+    <h1>The Dark Knight</h1>
+    <div class="hero-meta">
+      <span class="imdb-badge">IMDb 9.0</span>
+      <span>2008</span><span class="sep">|</span>
+      <span>2h 32m</span><span class="sep">|</span>
+      <span>Action · Crime · Drama</span>
+    </div>
+    <p>When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.</p>
+    <div class="hero-btns">
+      <button class="btn-play"><div class="play-tri"></div> Play Now</button>
+      <button class="btn-info">ℹ More Info</button>
+    </div>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<section class="filter-section">
+  <div class="filter-bar">
+    <span class="filter-label">Genre:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="Action">Action</button>
+    <button class="filter-btn" data-filter="Drama">Drama</button>
+    <button class="filter-btn" data-filter="Sci-Fi">Sci-Fi</button>
+    <button class="filter-btn" data-filter="Crime">Crime</button>
+    <button class="filter-btn" data-filter="Thriller">Thriller</button>
+    <button class="filter-btn" data-filter="Comedy">Comedy</button>
+    <button class="filter-btn" data-filter="Animation">Animation</button>
+    &nbsp;
+    <span class="filter-label">Rating:</span>
+    <button class="filter-btn" data-rating="all">All</button>
+    <button class="filter-btn" data-rating="9">9+ IMDb</button>
+    <button class="filter-btn" data-rating="8">8+ IMDb</button>
+  </div>
+</section>
+
+<!-- SECTIONS -->
+<section class="section" data-section="trending">
+  <div class="section-header">
+    <span class="section-title">Trending Now</span>
+    <span class="section-count" id="count-trending"></span>
+  </div>
+  <div class="cards-grid" id="grid-trending"></div>
+</section>
+
+<section class="section" data-section="classics">
+  <div class="section-header">
+    <span class="section-title">All-Time Classics</span>
+    <span class="section-count" id="count-classics"></span>
+  </div>
+  <div class="cards-grid" id="grid-classics"></div>
+</section>
+
+<section class="section" data-section="scifi">
+  <div class="section-header">
+    <span class="section-title">Sci-Fi & Fantasy</span>
+    <span class="section-count" id="count-scifi"></span>
+  </div>
+  <div class="cards-grid" id="grid-scifi"></div>
+</section>
+
+<section class="section" data-section="crime">
+  <div class="section-header">
+    <span class="section-title">Crime & Thriller</span>
+    <span class="section-count" id="count-crime"></span>
+  </div>
+  <div class="cards-grid" id="grid-crime"></div>
+</section>
+
+<section class="section hidden" id="search-section">
+  <div class="section-header">
+    <span class="section-title">Search Results</span>
+    <span class="section-count" id="count-search"></span>
+  </div>
+  <div class="cards-grid" id="grid-search"></div>
+</section>
+
+<footer>
+  <a href="#" class="logo">StreamVault</a>
+  <p>© 2026 StreamVault. For entertainment purposes only.</p>
+</footer>
+
+<script>
+const movies = [
+  // TRENDING
+  { id:1, title:"Oppenheimer", year:2023, duration:"3h 0m", genre:"Drama", rating:8.9, row:"trending",
+    desc:"The story of J. Robert Oppenheimer's role in the development of the atomic bomb during WWII.",
+    poster:"https://images.unsplash.com/photo-1635805737707-575885ab0820?w=400&q=80" },
+  { id:2, title:"Dune: Part Two", year:2024, duration:"2h 46m", genre:"Sci-Fi", rating:8.5, row:"trending",
+    desc:"Paul Atreides unites with the Fremen while on a warpath of revenge against the conspirators who destroyed his family.",
+    poster:"https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&q=80" },
+  { id:3, title:"The Dark Knight", year:2008, duration:"2h 32m", genre:"Action", rating:9.0, row:"trending",
+    desc:"Batman faces the Joker, a criminal mastermind who plunges Gotham into chaos, testing the hero's limits.",
+    poster:"https://images.unsplash.com/photo-1531259683007-016a7b628fc3?w=400&q=80" },
+  { id:4, title:"Killers of the Flower Moon", year:2023, duration:"3h 26m", genre:"Crime", rating:7.7, row:"trending",
+    desc:"Members of the Osage tribe are murdered under mysterious circumstances in 1920s Oklahoma.",
+    poster:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=80" },
+  { id:5, title:"Poor Things", year:2023, duration:"2h 21m", genre:"Comedy", rating:8.0, row:"trending",
+    desc:"The incredible tale of Bella Baxter, a young woman brought back to life by an eccentric scientist.",
+    poster:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80" },
+
+  // CLASSICS
+  { id:6, title:"The Shawshank Redemption", year:1994, duration:"2h 22m", genre:"Drama", rating:9.3, row:"classics",
+    desc:"Two imprisoned men bond over years, finding solace and redemption through acts of common decency.",
+    poster:"https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=400&q=80" },
+  { id:7, title:"The Godfather", year:1972, duration:"2h 55m", genre:"Crime", rating:9.2, row:"classics",
+    desc:"The aging patriarch of an organized crime dynasty transfers control to his reluctant son.",
+    poster:"https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=400&q=80" },
+  { id:8, title:"Schindler's List", year:1993, duration:"3h 15m", genre:"Drama", rating:9.0, row:"classics",
+    desc:"In German-occupied Poland, Oskar Schindler saves the lives of more than a thousand Jewish refugees.",
+    poster:"https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=400&q=80" },
+  { id:9, title:"Pulp Fiction", year:1994, duration:"2h 34m", genre:"Crime", rating:8.9, row:"classics",
+    desc:"The lives of two mob hitmen, a boxer, and a pair of criminals intertwine in four tales of violence and redemption.",
+    poster:"https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&q=80" },
+  { id:10, title:"Forrest Gump", year:1994, duration:"2h 22m", genre:"Drama", rating:8.8, row:"classics",
+    desc:"The history of the USA from the 1950s to the '70s unfolds through the life of a man from Alabama.",
+    poster:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&q=80" },
+  { id:11, title:"The Lion King", year:1994, duration:"1h 28m", genre:"Animation", rating:8.5, row:"classics",
+    desc:"Lion prince Simba flees his kingdom after his father's murder, only to return and reclaim his throne.",
+    poster:"https://images.unsplash.com/photo-1504173010664-32509107de35?w=400&q=80" },
+
+  // SCI-FI
+  { id:12, title:"Interstellar", year:2014, duration:"2h 49m", genre:"Sci-Fi", rating:8.7, row:"scifi",
+    desc:"A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+    poster:"https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&q=80" },
+  { id:13, title:"The Matrix", year:1999, duration:"2h 16m", genre:"Sci-Fi", rating:8.7, row:"scifi",
+    desc:"A computer hacker learns from mysterious rebels about the true nature of his reality.",
+    poster:"https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&q=80" },
+  { id:14, title:"Blade Runner 2049", year:2017, duration:"2h 44m", genre:"Sci-Fi", rating:8.0, row:"scifi",
+    desc:"A new blade runner discovers a long-buried secret that has the potential to plunge what's left of society into chaos.",
+    poster:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=80" },
+  { id:15, title:"Arrival", year:2016, duration:"1h 56m", genre:"Sci-Fi", rating:7.9, row:"scifi",
+    desc:"A linguist is recruited by the military to communicate with alien lifeforms after 12 mysterious spacecrafts appear.",
+    poster:"https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&q=80" },
+
+  // CRIME
+  { id:16, title:"Goodfellas", year:1990, duration:"2h 26m", genre:"Crime", rating:8.7, row:"crime",
+    desc:"The story of Henry Hill and his life in the mob, covering his rise and fall in the criminal underworld.",
+    poster:"https://images.unsplash.com/photo-1617957743089-57d4591c0e32?w=400&q=80" },
+  { id:17, title:"No Country for Old Men", year:2007, duration:"2h 2m", genre:"Thriller", rating:8.2, row:"crime",
+    desc:"A hunter stumbles upon a drug deal gone wrong in the Texas desert and takes the money — along with the danger.",
+    poster:"https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=80" },
+  { id:18, title:"Zodiac", year:2007, duration:"2h 37m", genre:"Thriller", rating:7.7, row:"crime",
+    desc:"In the late 1960s, San Francisco is terrorized by the Zodiac Killer. A cartoonist becomes obsessed with the case.",
+    poster:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
+  { id:19, title:"Heat", year:1995, duration:"2h 50m", genre:"Crime", rating:8.3, row:"crime",
+    desc:"A group of professional bank robbers start to feel the heat from police when they unknowingly leave behind a witness.",
+    poster:"https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=400&q=80" },
+];
+
+function makeCard(m) {
+  return `
+    <div class="movie-card" data-id="${m.id}" data-genre="${m.genre}" data-rating="${m.rating}">
+      <div class="card-poster">
+        <img src="${m.poster}" alt="${m.title}" loading="lazy" />
+        <div class="poster-overlay"></div>
+        <div class="card-badges">
+          <span class="badge badge-genre">${m.genre}</span>
+          <span class="badge badge-imdb">★ ${m.rating}</span>
         </div>
-
-        <div class="nav-group">
-          <div class="nav-label">Communication</div>
-          <a class="nav-item" href="#receiving">Receiving messages</a>
-          <a class="nav-item" href="#sending">Sending messages</a>
-          <a class="nav-item" href="#message-structure">Message structure</a>
+        <div class="hover-play">
+          <div class="play-circle"><div class="play-circle-arrow"></div></div>
         </div>
-
-        <div class="nav-group">
-          <div class="nav-label">Game lifecycle</div>
-          <a class="nav-item" href="#regular-spin">Regular spin</a>
-          <a class="nav-item" href="#win-flow">Win flow</a>
-          <a class="nav-item" href="#free-games">Free Games</a>
-          <a class="nav-item" href="#balance-updates">Balance updates</a>
-          <a class="nav-item" href="#game-closing">Game closing</a>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-label">Messages</div>
-          <a class="nav-item" href="#config">Config</a>
-          <a class="nav-item" href="#modes">Modes</a>
-          <a class="nav-item" href="#states">States</a>
-          <a class="nav-item" href="#events">Events</a>
-          <a class="nav-item" href="#actions">Actions</a>
-        </div>
-
-        <div class="nav-group">
-          <div class="nav-label">Reference</div>
-          <a class="nav-item" href="#complete-flow">Complete message flow</a>
-          <a class="nav-item" href="#errors">Connection & errors</a>
-        </div>
-      </nav>
-
-      <div class="sidebar-footer">
-        <span>Top Spin FE Wrapper</span>
-        <span>Protocol v4.5</span>
       </div>
-    </aside>
+      <div class="card-body">
+        <div class="card-title">${m.title}</div>
+        <div class="card-year-dur">${m.year} · ${m.duration}</div>
+        <div class="card-desc">${m.desc}</div>
+      </div>
+    </div>`;
+}
 
-    <main class="content" id="content">
-      <article>
-        <section class="doc-section hero-section" id="welcome" data-title="Welcome">
-          <div class="eyebrow">TOP SPIN FE WRAPPER PROTOCOL</div>
-          <h1>Integrate your game with Top Spin</h1>
-          <p class="lead">The Top Spin FE Wrapper Protocol enables communication between a game frontend and the embedding Top Spin wrapper through the <code>window.postMessage()</code> Web API.</p>
+const sections = {
+  trending: { grid: document.getElementById('grid-trending'), count: document.getElementById('count-trending') },
+  classics:  { grid: document.getElementById('grid-classics'),  count: document.getElementById('count-classics') },
+  scifi:     { grid: document.getElementById('grid-scifi'),     count: document.getElementById('count-scifi') },
+  crime:     { grid: document.getElementById('grid-crime'),     count: document.getElementById('count-crime') },
+};
 
-          <div class="hero-actions">
-            <a class="primary-button" href="#quick-start">Get started <span>→</span></a>
-            <a class="secondary-button" href="#complete-flow">View complete flow</a>
-          </div>
+const sectionLabels = { trending:'Trending Now', classics:'All-Time Classics', scifi:'Sci-Fi & Fantasy', crime:'Crime & Thriller' };
 
-          <div class="info-card accent-card">
-            <div class="info-icon">i</div>
-            <div>
-              <strong>Game FE drives initialization</strong>
-              <p>The game starts Wrapper Protocol communication by sending <code>mode:init</code>. Top Spin does not send an initialization command before this message.</p>
-            </div>
-          </div>
-        </section>
+function renderAll(list) {
+  Object.entries(sections).forEach(([key, {grid, count}]) => {
+    const items = list.filter(m => m.row === key);
+    count.textContent = items.length ? `${items.length} title${items.length!==1?'s':''}` : '';
+    grid.innerHTML = items.length
+      ? items.map(makeCard).join('')
+      : `<div class="empty"><div class="empty-icon">🎬</div><h3>No titles found</h3><p>Try adjusting your filters.</p></div>`;
+    grid.closest('.section').classList.toggle('hidden', items.length === 0);
+  });
+}
 
-        <section class="doc-section" id="overview" data-title="Integration overview">
-          <div class="section-kicker">Getting started</div>
-          <h2>Integration overview</h2>
-          <p>Communication is bidirectional. The game FE sends its current modes, states and events to Top Spin, while Top Spin sends actions to the game FE when it needs the game to perform an operation.</p>
+let activeGenre = 'all';
+let activeRating = 'all';
+let searchQuery = '';
 
-          <div class="direction-grid">
-            <div class="direction-card">
-              <span class="direction-tag outgoing">GAME FE → TOP SPIN</span>
-              <h3>Game messages</h3>
-              <p>Configuration, modes, states and events describe the current state of the game.</p>
-              <div class="chip-row"><span>config</span><span>mode</span><span>state</span><span>event</span></div>
-            </div>
-            <div class="direction-card">
-              <span class="direction-tag incoming">TOP SPIN → GAME FE</span>
-              <h3>Top Spin commands</h3>
-              <p>Actions request an operation from the game, such as changing the bet or starting a spin.</p>
-              <div class="chip-row"><span>action</span></div>
-            </div>
-          </div>
-        </section>
+function applyFilters() {
+  const q = searchQuery.toLowerCase();
+  const inSearch = q.length > 0;
+  const searchSection = document.getElementById('search-section');
+  const searchGrid = document.getElementById('grid-search');
+  const countSearch = document.getElementById('count-search');
 
-        <section class="doc-section" id="quick-start" data-title="Quick start">
-          <div class="section-kicker">Getting started</div>
-          <h2>Quick start</h2>
-          <p>Use the browser <code>message</code> event to listen for Top Spin commands and <code>window.postMessage()</code> to send Wrapper Protocol messages back to Top Spin.</p>
+  if (inSearch) {
+    searchSection.classList.remove('hidden');
+    Object.values(sections).forEach(({grid}) => grid.closest('.section').classList.add('hidden'));
+    const res = movies.filter(m =>
+      m.title.toLowerCase().includes(q) ||
+      m.genre.toLowerCase().includes(q) ||
+      m.desc.toLowerCase().includes(q)
+    );
+    countSearch.textContent = `${res.length} result${res.length!==1?'s':''}`;
+    searchGrid.innerHTML = res.length
+      ? res.map(makeCard).join('')
+      : `<div class="empty"><div class="empty-icon">🔍</div><h3>No results</h3><p>Try a different search term.</p></div>`;
+    return;
+  }
 
-          <h3 id="receiving">Listen for messages from Top Spin</h3>
-          <div class="code-block">
-            <div class="code-header"><span>JavaScript</span><button class="copy-button">Copy</button></div>
-            <pre><code>window.addEventListener("message", function(e) {
-    try {
-        var data = JSON.parse(e.data);
+  searchSection.classList.add('hidden');
+  const filtered = movies.filter(m => {
+    const genreOk = activeGenre === 'all' || m.genre === activeGenre;
+    const ratingOk = activeRating === 'all' || m.rating >= parseFloat(activeRating);
+    return genreOk && ratingOk;
+  });
+  renderAll(filtered);
+}
 
-        if (data) {
-            // Process Top Spin wrapper messages
-        }
-    } catch (e) {}
-});</code></pre>
-          </div>
+renderAll(movies);
 
-          <h3 id="sending">Send messages to Top Spin</h3>
-          <div class="code-block">
-            <div class="code-header"><span>JavaScript</span><button class="copy-button">Copy</button></div>
-            <pre><code>var message;
-
-// Create Wrapper Protocol JSON message
-message = JSON.stringify({
-    mode: {
-        name: "init",
-        data: {}
-    }
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeGenre = btn.dataset.filter;
+    applyFilters();
+  });
 });
 
-window.postMessage(message, "*");</code></pre>
-          </div>
-        </section>
+document.querySelectorAll('[data-rating]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-rating]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeRating = btn.dataset.rating;
+    applyFilters();
+  });
+});
 
-        <section class="doc-section" id="initialization" data-title="Initialization flow">
-          <div class="section-kicker">Game lifecycle</div>
-          <h2>Initialization flow</h2>
-          <p>When the game is opened, the game FE initiates the Wrapper Protocol. The required startup sequence is:</p>
-
-          <div class="flow-sequence" aria-label="Initialization sequence">
-            <div class="flow-node">
-              <span class="flow-step">01</span>
-              <strong>mode:init</strong>
-              <small>Game FE initializes</small>
-            </div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-node">
-              <span class="flow-step">02</span>
-              <strong>config</strong>
-              <small>Game configuration</small>
-            </div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-node">
-              <span class="flow-step">03</span>
-              <strong>mode:ready</strong>
-              <small>Game is ready</small>
-            </div>
-            <span class="flow-arrow">→</span>
-            <div class="flow-node">
-              <span class="flow-step">04</span>
-              <strong>state:beforeSpin</strong>
-              <small>Ready for first spin</small>
-            </div>
-          </div>
-
-          <div class="callout warning-callout">
-            <div class="callout-icon">!</div>
-            <div>
-              <strong>Do not wait for an initial Top Spin command</strong>
-              <p>Before <code>mode:init</code>, the game should not wait for an action from Top Spin. The first Wrapper Protocol message is sent by the game FE.</p>
-            </div>
-          </div>
-
-          <div class="sequence-panel">
-            <div class="sequence-head">
-              <span>Game FE</span>
-              <span>Top Spin</span>
-            </div>
-            <div class="sequence-row"><span>Game opened</span><span class="sequence-line"><b>mode:init</b><i>→</i></span><span>Initialize wrapper</span></div>
-            <div class="sequence-row"><span>Send configuration</span><span class="sequence-line"><b>config</b><i>→</i></span><span>Process game data</span></div>
-            <div class="sequence-row"><span>Game ready</span><span class="sequence-line"><b>mode:ready</b><i>→</i></span><span>Ready state</span></div>
-            <div class="sequence-row"><span>Pre-spin state</span><span class="sequence-line"><b>state:beforeSpin</b><i>→</i></span><span>Normal play available</span></div>
-          </div>
-        </section>
-
-        <section class="doc-section" id="message-structure" data-title="Message structure">
-          <div class="section-kicker">Communication</div>
-          <h2>Message structure</h2>
-          <p>Wrapper Protocol messages are JSON objects. The top-level property identifies the message category.</p>
-
-          <div class="message-table-wrap">
-            <table class="message-table">
-              <thead><tr><th>Type</th><th>Direction</th><th>Purpose</th></tr></thead>
-              <tbody>
-                <tr><td><code>config</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Provides game configuration.</td></tr>
-                <tr><td><code>mode</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Describes the current high-level game mode.</td></tr>
-                <tr><td><code>state</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Describes the current game state.</td></tr>
-                <tr><td><code>event</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Reports changes such as balance, bet or win.</td></tr>
-                <tr><td><code>action</code></td><td><span class="direction-mini in">TS → Game</span></td><td>Requests an operation from the game FE.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="doc-section" id="config" data-title="Config">
-          <div class="section-kicker">Messages</div>
-          <h2>Config</h2>
-          <p>The config message is sent by the game FE after <code>mode:init</code>. It provides Top Spin with game configuration such as total bet, active lines, game mode and the available bets for each game mode.</p>
-
-          <div class="code-block">
-            <div class="code-header"><span>Example · fixed 5 lines</span><button class="copy-button">Copy</button></div>
-            <pre><code>{
-  "config": {
-    "hitRateInfo": "1:13204807",
-    "RTP": "95.13%",
-    "totalBet": 100,
-    "lines": 5,
-    "gameMode": 0,
-    "gameModeData": [
-      {
-        "gameMode": 0,
-        "lines": 5,
-        "bets": [5, 10, 15, 20, 25, 40, 50, 75, 100]
-      }
-    ]
-  }
-}</code></pre>
-          </div>
-        </section>
-
-        <section class="doc-section" id="modes" data-title="Modes">
-          <div class="section-kicker">Messages</div>
-          <h2>Mode messages</h2>
-          <p>Mode messages communicate the current high-level phase of the game FE.</p>
-          <div class="reference-grid">
-            <div class="reference-item"><code>init</code><span>Wrapper initialization started.</span></div>
-            <div class="reference-item"><code>ready</code><span>Game is ready for normal interaction.</span></div>
-            <div class="reference-item"><code>spin</code><span>A spin has started.</span></div>
-            <div class="reference-item"><code>win</code><span>The current spin produced a win.</span></div>
-            <div class="reference-item"><code>bonusGame</code><span>Game is in a bonus / Free Games phase.</span></div>
-            <div class="reference-item"><code>error</code><span>Game entered an error state.</span></div>
-            <div class="reference-item"><code>closed</code><span>Game has closed.</span></div>
-          </div>
-        </section>
-
-        <section class="doc-section" id="states" data-title="States">
-          <div class="section-kicker">Messages</div>
-          <h2>State messages</h2>
-          <p>State messages provide more specific information about the current game state.</p>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Regular game states</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"state":{"name":"beforeSpin","data":{"balance":1000}}}
-{"state":{"name":"spinning","data":{}}}</code></pre>
-          </div>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Free Games states</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"state":{"name":"freeGamesStart","data":{"balance":1000,"totalRoundWin":0}}}
-{"state":{"name":"freeGamesBeforeSpin","data":{"totalRoundWin":0}}}
-{"state":{"name":"freeGamesMore","data":{"totalRoundWin":0}}}
-{"state":{"name":"freeGamesSpinning","data":{}}}
-{"state":{"name":"freeGamesEnd","data":{"balance":1000}}}</code></pre>
-          </div>
-        </section>
-
-        <section class="doc-section" id="events" data-title="Events">
-          <div class="section-kicker">Messages</div>
-          <h2>Event messages</h2>
-          <p>Events report changes that occur inside the game FE.</p>
-          <div class="reference-grid two-column">
-            <div class="reference-item"><code>balanceChange</code><span>Updated game balance.</span></div>
-            <div class="reference-item"><code>increaseWin</code><span>Cumulative win for the spin.</span></div>
-            <div class="reference-item"><code>betChange</code><span>Current bet value changed.</span></div>
-            <div class="reference-item"><code>linesChange</code><span>Active lines and bet changed.</span></div>
-            <div class="reference-item"><code>splashScreenOpen</code><span>Splash screen opened.</span></div>
-            <div class="reference-item"><code>splashScreenClose</code><span>Splash screen closed.</span></div>
-            <div class="reference-item"><code>payTable</code><span>Paytable visibility changed.</span></div>
-            <div class="reference-item"><code>sound / music</code><span>Audio state changed.</span></div>
-            <div class="reference-item"><code>gameClosing</code><span>Game is closing.</span></div>
-            <div class="reference-item"><code>errorDialog</code><span>Error dialog state.</span></div>
-          </div>
-        </section>
-
-        <section class="doc-section" id="actions" data-title="Actions">
-          <div class="section-kicker">Messages</div>
-          <h2>Top Spin actions</h2>
-          <p>Top Spin sends <code>action</code> messages to request an operation from the game FE. Where applicable, the game confirms the result with an event.</p>
-          <div class="message-table-wrap">
-            <table class="message-table">
-              <thead><tr><th>Action</th><th>Expected game behavior</th><th>Confirmation</th></tr></thead>
-              <tbody>
-                <tr><td><code>betDown / betUp</code></td><td>Change bet by one step.</td><td><code>betChange</code></td></tr>
-                <tr><td><code>updateBalance</code></td><td>Return current balance.</td><td><code>balanceChange</code></td></tr>
-                <tr><td><code>payTable</code></td><td>Toggle paytable visibility.</td><td><code>payTable</code></td></tr>
-                <tr><td><code>overrideMaxBet</code></td><td>Limit maximum available bet.</td><td><code>betChange</code></td></tr>
-                <tr><td><code>overrideMinBet</code></td><td>Limit minimum available bet.</td><td><code>betChange</code></td></tr>
-                <tr><td><code>maxBet</code></td><td>Set max bet on current line.</td><td><code>betChange</code></td></tr>
-                <tr><td><code>overrideLines</code></td><td>Override possible number of lines.</td><td><code>linesChange</code></td></tr>
-                <tr><td><code>sound / music</code></td><td>Toggle game audio state.</td><td><code>sound / music</code></td></tr>
-                <tr><td><code>leaveGame</code></td><td>Leave the game.</td><td>—</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="doc-section" id="regular-spin" data-title="Regular spin">
-          <div class="section-kicker">Game lifecycle</div>
-          <h2>Regular spin flow</h2>
-          <p>When a regular spin starts, the game FE sends <code>mode:spin</code> followed by <code>state:spinning</code>.</p>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Spin started</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"spin","data":{}}}
-{"state":{"name":"spinning","data":{}}}</code></pre>
-          </div>
-          <p>If the spin finishes without a win, the game returns to the normal pre-spin state:</p>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>No win</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"ready","data":{}}}
-{"state":{"name":"beforeSpin","data":{"balance":1000}}}</code></pre>
-          </div>
-        </section>
-
-        <section class="doc-section" id="win-flow" data-title="Win flow">
-          <div class="section-kicker">Game lifecycle</div>
-          <h2>Regular spin win</h2>
-          <p>When a regular spin produces a win, send <code>mode:win</code> and then report the cumulative win with <code>increaseWin</code>. Once the game is ready again, return to <code>mode:ready</code> and <code>state:beforeSpin</code>.</p>
-          <div class="code-block">
-            <div class="code-header"><span>Game FE → Top Spin</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"win","data":{}}}
-{"event":{"name":"increaseWin","data":{"value":100}}}
-{"mode":{"name":"ready","data":{}}}
-{"state":{"name":"beforeSpin","data":{"balance":1000}}}</code></pre>
-          </div>
-        </section>
-
-        <section class="doc-section" id="free-games" data-title="Free Games">
-          <div class="section-kicker">Game lifecycle</div>
-          <h2>Free Games flow</h2>
-          <p>When Free Games are won, the game first reports the win. Once the balance is updated and the first Free Game is ready, enter <code>bonusGame</code> mode and send <code>freeGamesStart</code>.</p>
-
-          <div class="mini-flow">
-            <span>win</span><i>→</i><span>increaseWin</span><i>→</i><span>bonusGame</span><i>→</i><span>freeGamesStart</span>
-          </div>
-
-          <div class="code-block">
-            <div class="code-header"><span>Start Free Games</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"win","data":{}}}
-{"event":{"name":"increaseWin","data":{"value":100}}}
-{"mode":{"name":"bonusGame","data":{}}}
-{"state":{"name":"freeGamesStart","data":{"balance":1000,"totalRoundWin":0}}}</code></pre>
-          </div>
-
-          <h3>Spin inside Free Games</h3>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Free Game spin</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"spin","data":{}}}
-{"state":{"name":"freeGamesSpinning","data":{}}}</code></pre>
-          </div>
-
-          <h3>End Free Games</h3>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Free Games end</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"ready","data":{}}}
-{"state":{"name":"freeGamesEnd","data":{"balance":1000}}}</code></pre>
-          </div>
-        </section>
-
-        <section class="doc-section" id="balance-updates" data-title="Balance updates">
-          <div class="section-kicker">Game lifecycle</div>
-          <h2>Balance updates</h2>
-          <p>Each time the game FE updates its balance, it should send a <code>balanceChange</code> event to Top Spin.</p>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Game FE → Top Spin</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"event":{"name":"balanceChange","data":{"value":1000}}}</code></pre>
-          </div>
-          <p>If Top Spin explicitly requests a balance update, respond with the same <code>balanceChange</code> event containing the current value.</p>
-          <div class="request-response">
-            <div>
-              <span class="direction-tag incoming">TOP SPIN → GAME FE</span>
-              <code>{"action":{"name":"updateBalance"}}</code>
-            </div>
-            <span class="rr-arrow">→</span>
-            <div>
-              <span class="direction-tag outgoing">GAME FE → TOP SPIN</span>
-              <code>{"event":{"name":"balanceChange","data":{"value":1000}}}</code>
-            </div>
-          </div>
-        </section>
-
-        <section class="doc-section" id="game-closing" data-title="Game closing">
-          <div class="section-kicker">Game lifecycle</div>
-          <h2>Game closing</h2>
-          <p>For unconventional or other reasons where the game needs to close, notify Top Spin with <code>gameClosing</code> followed by <code>mode:closed</code>.</p>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Game FE → Top Spin</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"event":{"name":"gameClosing","data":{}}}
-{"mode":{"name":"closed","data":{}}}</code></pre>
-          </div>
-        </section>
-
-        <section class="doc-section" id="complete-flow" data-title="Complete message flow">
-          <div class="section-kicker">Reference</div>
-          <h2>Complete regular game flow</h2>
-          <p>This condensed sequence shows the normal lifecycle from game opening through a spin and back to the ready state.</p>
-
-          <div class="timeline">
-            <div class="timeline-item"><span>1</span><div><strong>Initialize</strong><code>mode:init</code></div></div>
-            <div class="timeline-item"><span>2</span><div><strong>Configure</strong><code>config</code></div></div>
-            <div class="timeline-item"><span>3</span><div><strong>Ready</strong><code>mode:ready</code></div></div>
-            <div class="timeline-item"><span>4</span><div><strong>Before spin</strong><code>state:beforeSpin</code></div></div>
-            <div class="timeline-item"><span>5</span><div><strong>Spin</strong><code>mode:spin</code></div></div>
-            <div class="timeline-item"><span>6</span><div><strong>Spinning</strong><code>state:spinning</code></div></div>
-            <div class="timeline-item optional"><span>7</span><div><strong>Win · if applicable</strong><code>mode:win → event:increaseWin</code></div></div>
-            <div class="timeline-item"><span>8</span><div><strong>Ready again</strong><code>mode:ready → state:beforeSpin</code></div></div>
-          </div>
-        </section>
-
-        <section class="doc-section" id="errors" data-title="Connection & errors">
-          <div class="section-kicker">Reference</div>
-          <h2>Connection & errors</h2>
-          <h3>Disconnect</h3>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Internet disconnection</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"error","data":{}}}
-{"event":{"name":"disconnect","data":{}}}</code></pre>
-          </div>
-          <h3>Reconnect</h3>
-          <div class="code-block compact-code">
-            <div class="code-header"><span>Internet reconnect</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"event":{"name":"reconnect","data":{}}}</code></pre>
-          </div>
-          <div class="callout neutral-callout">
-            <div class="callout-icon">i</div>
-            <div><strong>Provider-specific reconnect flow</strong><p>After reconnect, restoring <code>mode:ready</code> and <code>state:beforeSpin</code> can require provider-specific cooperation.</p></div>
-          </div>
-        </section>
-
-        <footer class="doc-footer">
-          <div><strong>Top Spin FE Wrapper Protocol</strong><span>Documentation prototype · v4.5</span></div>
-          <a href="#welcome">Back to top ↑</a>
-        </footer>
-      </article>
-    </main>
-
-    <aside class="toc" aria-label="On this page">
-      <div class="toc-inner">
-        <div class="toc-title">On this page</div>
-        <a href="#welcome">Welcome</a>
-        <a href="#overview">Integration overview</a>
-        <a href="#quick-start">Quick start</a>
-        <a href="#initialization">Initialization flow</a>
-        <a href="#message-structure">Message structure</a>
-        <a href="#regular-spin">Regular spin</a>
-        <a href="#free-games">Free Games</a>
-        <a href="#balance-updates">Balance updates</a>
-        <a href="#complete-flow">Complete flow</a>
-      </div>
-    </aside>
-  </div>
-
-  <div class="search-modal" id="searchModal" aria-hidden="true">
-    <div class="search-backdrop" data-close-search></div>
-    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="Search documentation">
-      <div class="search-input-wrap">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
-        <input id="searchInput" type="search" placeholder="Search Top Spin docs..." autocomplete="off" />
-        <kbd>ESC</kbd>
-      </div>
-      <div class="search-results" id="searchResults">
-        <div class="search-empty">Start typing to search the documentation.</div>
-      </div>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  applyFilters();
+});
+</script>
 </body>
 </html>
