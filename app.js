@@ -56,6 +56,78 @@
         observer.observe(section);
     });
 
+    function highlightCode(source) {
+        let highlighted = "";
+        let index = 0;
+
+        function token(className, value) {
+            return '<span class="' + className + '">' + escapeHtml(value) + '</span>';
+        }
+
+        while (index < source.length) {
+            const character = source[index];
+
+            if (character === '"' || character === "'") {
+                const quote = character;
+                const start = index++;
+
+                while (index < source.length) {
+                    if (source[index] === "\\") {
+                        index += 2;
+                    } else if (source[index++] === quote) {
+                        break;
+                    }
+                }
+
+                const value = source.slice(start, index);
+                let next = index;
+                while (/\s/.test(source[next] || "")) next += 1;
+                highlighted += token(source[next] === ":" ? "syntax-key" : "syntax-string", value);
+                continue;
+            }
+
+            if (character === "/" && source[index + 1] === "/") {
+                const start = index;
+                while (index < source.length && source[index] !== "\n") index += 1;
+                highlighted += token("syntax-comment", source.slice(start, index));
+                continue;
+            }
+
+            if (/[-\d]/.test(character) && /\d/.test(source[index + (character === "-" ? 1 : 0)] || "")) {
+                const match = source.slice(index).match(/^-?\d+(?:\.\d+)?/)[0];
+                highlighted += token("syntax-number", match);
+                index += match.length;
+                continue;
+            }
+
+            if (/[A-Za-z_$]/.test(character)) {
+                const match = source.slice(index).match(/^[A-Za-z_$][\w$]*/)[0];
+                let className = "";
+
+                if (match === "true" || match === "false") className = "syntax-boolean";
+                if (match === "null") className = "syntax-null";
+                if (/^(var|let|const|function|if|else|try|catch|return|new|async|await)$/.test(match)) className = "syntax-keyword";
+
+                highlighted += className ? token(className, match) : escapeHtml(match);
+                index += match.length;
+                continue;
+            }
+
+            if (/[{}\[\]():,;]/.test(character)) {
+                highlighted += token("syntax-punctuation", character);
+            } else {
+                highlighted += escapeHtml(character);
+            }
+            index += 1;
+        }
+
+        return highlighted;
+    }
+
+    document.querySelectorAll(".code-block code").forEach(function (code) {
+        code.innerHTML = highlightCode(code.textContent);
+    });
+
     document.querySelectorAll(".copy-button").forEach(function (button) {
         button.addEventListener("click", async function () {
             const code = button.closest(".code-block").querySelector("code").innerText;

@@ -95,7 +95,7 @@
         <section class="doc-section hero-section" id="welcome" data-title="Welcome">
           <div class="eyebrow">TOP SPIN FE WRAPPER PROTOCOL</div>
           <h1>Integrate your game with Top Spin</h1>
-          <p class="lead">The Top Spin FE Wrapper Protocol enables communication between a game frontend and the embedding Top Spin wrapper through the <code>window.postMessage()</code> Web API.</p>
+          <p class="lead">The Top Spin FE Wrapper Protocol enables communication between a provider game frontend and the embedding Top Spin wrapper through the <code>window.postMessage()</code> Web API.</p>
 
           <div class="hero-actions">
             <a class="primary-button" href="#quick-start">Get started <span>→</span></a>
@@ -114,7 +114,7 @@
         <section class="doc-section" id="overview" data-title="Integration overview">
           <div class="section-kicker">Getting started</div>
           <h2>Integration overview</h2>
-          <p>Communication is bidirectional. The game FE sends its current modes, states and events to Top Spin, while Top Spin sends actions to the game FE when it needs the game to perform an operation.</p>
+          <p>Communication is bidirectional. The provider game FE sends its current modes, states and events to Top Spin, while Top Spin sends actions to the provider game FE when it needs the game to perform an operation.</p>
 
           <div class="direction-grid">
             <div class="direction-card">
@@ -135,7 +135,7 @@
         <section class="doc-section" id="how-it-works" data-title="How the wrapper works">
           <div class="section-kicker">Getting started</div>
           <h2>How the wrapper works — from zero</h2>
-          <p class="lead-small">Think of Top Spin and the provider game as two separate applications. The provider game runs inside an <code>iframe</code>. The Wrapper Protocol is simply the language they use to tell each other what is happening.</p>
+          <p class="lead-small">Think of Top Spin and the provider game as two separate applications. The provider game runs inside an <code>iframe</code> created by the Top Spin wrapper. The Wrapper Protocol is simply the language they use to tell each other what is happening.</p>
 
           <div class="plain-language-card">
             <div class="plain-language-title">The simplest possible explanation</div>
@@ -188,7 +188,7 @@
         <section class="doc-section" id="loading-game" data-title="Loading the game">
           <div class="section-kicker">Getting started</div>
           <h2>What happens when a game is opened?</h2>
-          <p>This is the startup process from the moment Top Spin receives the game URL until the game is ready for the first spin.</p>
+          <p>This is the startup process from the moment Top Spin receives the game URL until the provider game is ready for the first spin.</p>
 
           <div class="startup-timeline">
             <div class="startup-step ts-side">
@@ -209,7 +209,7 @@
             </div>
             <div class="startup-step provider-side important-step">
               <span class="startup-number">5</span>
-              <div><span class="side-pill">PROVIDER</span><h3>The game starts the Wrapper Protocol</h3><p>When the provider wrapper is initialized, the game sends <code>mode:init</code>. <strong>Top Spin does not send an initial Wrapper Protocol command before this.</strong></p><code class="inline-message">{"mode":{"name":"init","data":{}}}</code></div>
+              <div><span class="side-pill">PROVIDER</span><h3>The game starts the Wrapper Protocol</h3><p>When the provider game is initialized and ready to be played, it sends <code>mode:init</code>. <strong>Top Spin does not send an initial Wrapper Protocol command before this.</strong></p><code class="inline-message">{"mode":{"name":"init","data":{}}}</code></div>
             </div>
             <div class="startup-step provider-side">
               <span class="startup-number">6</span>
@@ -244,7 +244,7 @@
           </div>
 
           <h3>After initialization: who talks first?</h3>
-          <p>Once the game is ready, communication becomes bidirectional. For example, when the player starts a spin through Top Spin, Top Spin sends an <code>action</code>. The provider executes it and reports what happens using <code>mode</code>, <code>state</code> and <code>event</code> messages.</p>
+          <p>Once the provider game is ready, communication becomes bidirectional. For example, when the player starts a spin through Top Spin, Top Spin sends an <code>action</code>. The provider executes it and reports what happens using <code>mode</code>, <code>state</code> and <code>event</code> messages.</p>
           <div class="mini-conversation">
             <div class="conversation-line ts-msg"><b>Top Spin</b><code>action: spin</code><span>→ Please start a spin.</span></div>
             <div class="conversation-line provider-msg"><b>Provider</b><code>mode: spin</code><span>→ Spin mode started.</span></div>
@@ -327,7 +327,7 @@ window.postMessage(message, "*");</code></pre>
             <div class="callout-icon">!</div>
             <div>
               <strong>Do not wait for an initial Top Spin command</strong>
-              <p>Before <code>mode:init</code>, the game should not wait for an action from Top Spin. The first Wrapper Protocol message is sent by the game FE.</p>
+              <p>Before <code>mode:init</code>, the provider game should not wait for an action from Top Spin. The first Wrapper Protocol message is sent by the provider game FE.</p>
             </div>
           </div>
 
@@ -354,9 +354,9 @@ window.postMessage(message, "*");</code></pre>
               <tbody>
                 <tr><td><code>config</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Provides game configuration.</td></tr>
                 <tr><td><code>mode</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Describes the current high-level game mode.</td></tr>
-                <tr><td><code>state</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Describes the current game state.</td></tr>
+                <tr><td><code>state</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Describes the current provider game state.</td></tr>
                 <tr><td><code>event</code></td><td><span class="direction-mini out">Game → TS</span></td><td>Reports changes such as balance, bet or win.</td></tr>
-                <tr><td><code>action</code></td><td><span class="direction-mini in">TS → Game</span></td><td>Requests an operation from the game FE.</td></tr>
+                <tr><td><code>action</code></td><td><span class="direction-mini in">TS → Game</span></td><td>Requests an operation from the provider game FE.</td></tr>
               </tbody>
             </table>
           </div>
@@ -365,10 +365,10 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="config" data-title="Config">
           <div class="section-kicker">Messages</div>
           <h2>Config</h2>
-          <p>The config message is sent by the game FE after <code>mode:init</code>. It provides Top Spin with game configuration such as total bet, active lines, game mode and the available bets for each game mode.</p>
+          <p>The config message is sent by the provider game FE after <code>mode:init</code>. It provides Top Spin with game configuration such as total bet, active lines, game mode and the available bets for each game mode.</p>
 
           <div class="code-block">
-            <div class="code-header"><span>Example · fixed 5 lines</span><button class="copy-button">Copy</button></div>
+            <div class="code-header"><span>Example · FIXED_LINES · fixed 5 lines</span><button class="copy-button">Copy</button></div>
             <pre><code>{
   "config": {
     "hitRateInfo": "1:13204807",
@@ -386,12 +386,30 @@ window.postMessage(message, "*");</code></pre>
   }
 }</code></pre>
           </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Example · MULTI_LINES · multiple selectable lines</span><button class="copy-button">Copy</button></div>
+            <pre><code>{
+  "config": {
+    "hitRateInfo": "1:13204807",
+    "RTP": "95.13%",
+    "totalBet": 30,
+    "lines": 3,
+    "gameMode": 1,
+    "gameModeData": [
+      { "gameMode": 1, "lines": 1, "bets": [10, 20, 30, 40, 50] },
+      { "gameMode": 1, "lines": 3, "bets": [30, 60, 90, 120, 150] },
+      { "gameMode": 1, "lines": 5, "bets": [50, 100, 150, 200, 250] }
+    ]
+  }
+}</code></pre>
+          </div>
         </section>
 
         <section class="doc-section" id="modes" data-title="Modes">
           <div class="section-kicker">Messages</div>
           <h2>Mode messages</h2>
-          <p>Mode messages communicate the current high-level phase of the game FE.</p>
+          <p>Mode messages communicate the current high-level phase of the provider game FE.</p>
           <div class="reference-grid">
             <div class="reference-item"><code>init</code><span>Wrapper initialization started.</span></div>
             <div class="reference-item"><code>ready</code><span>Game is ready for normal interaction.</span></div>
@@ -401,12 +419,31 @@ window.postMessage(message, "*");</code></pre>
             <div class="reference-item"><code>error</code><span>Game entered an error state.</span></div>
             <div class="reference-item"><code>closed</code><span>Game has closed.</span></div>
           </div>
+          <div class="code-block compact-code">
+            <div class="code-header"><span>Provider game FE → Top Spin</span><button class="copy-button">Copy</button></div>
+            <pre><code>{"mode":{"name":"init","data":{}}}
+{"mode":{"name":"ready","data":{}}}
+{"mode":{"name":"spin","data":{}}}
+{"mode":{"name":"win","data":{}}}
+{"mode":{"name":"bonusGame","data":{}}}
+{"mode":{"name":"error","data":{}}}
+{"mode":{"name":"closed","data":{}}}</code></pre>
+          </div>
         </section>
 
         <section class="doc-section" id="states" data-title="States">
           <div class="section-kicker">Messages</div>
           <h2>State messages</h2>
-          <p>State messages provide more specific information about the current game state.</p>
+          <p>State messages provide more specific information about the current provider game state.</p>
+          <div class="reference-grid">
+            <div class="reference-item"><code>beforeSpin</code><span>Regular game is ready for the next spin; includes the current balance.</span></div>
+            <div class="reference-item"><code>spinning</code><span>A regular game spin is in progress.</span></div>
+            <div class="reference-item"><code>freeGamesStart</code><span>A Free Games round starts; includes balance and cumulative round win.</span></div>
+            <div class="reference-item"><code>freeGamesBeforeSpin</code><span>The next awarded Free Game is ready to start.</span></div>
+            <div class="reference-item"><code>freeGamesMore</code><span>Additional Free Games were awarded during the round.</span></div>
+            <div class="reference-item"><code>freeGamesSpinning</code><span>A Free Game spin is in progress.</span></div>
+            <div class="reference-item"><code>freeGamesEnd</code><span>The Free Games round has ended; includes the updated balance.</span></div>
+          </div>
           <div class="code-block compact-code">
             <div class="code-header"><span>Regular game states</span><button class="copy-button">Copy</button></div>
             <pre><code>{"state":{"name":"beforeSpin","data":{"balance":1000}}}
@@ -425,7 +462,7 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="events" data-title="Events">
           <div class="section-kicker">Messages</div>
           <h2>Event messages</h2>
-          <p>Events report changes that occur inside the game FE.</p>
+          <p>Events report changes that occur inside the provider game FE.</p>
           <div class="reference-grid two-column">
             <div class="reference-item"><code>balanceChange</code><span>Updated game balance.</span></div>
             <div class="reference-item"><code>increaseWin</code><span>Cumulative win for the spin.</span></div>
@@ -438,17 +475,33 @@ window.postMessage(message, "*");</code></pre>
             <div class="reference-item"><code>gameClosing</code><span>Game is closing.</span></div>
             <div class="reference-item"><code>errorDialog</code><span>Error dialog state.</span></div>
           </div>
+          <div class="code-block compact-code">
+            <div class="code-header"><span>Provider game FE → Top Spin · representative values</span><button class="copy-button">Copy</button></div>
+            <pre><code>{"event":{"name":"balanceChange","data":{"value":1000}}}
+{"event":{"name":"increaseWin","data":{"value":100}}}
+{"event":{"name":"betChange","data":{"value":20}}}
+{"event":{"name":"linesChange","data":{"lines":5,"value":100}}}
+{"event":{"name":"splashScreenOpen","data":{}}}
+{"event":{"name":"splashScreenClose","data":{}}}
+{"event":{"name":"payTable","data":{"value":true}}}
+{"event":{"name":"sound","data":{"value":true}}}
+{"event":{"name":"music","data":{"value":true}}}
+{"event":{"name":"gameClosing","data":{}}}
+{"event":{"name":"errorDialog","data":{"value":true}}}</code></pre>
+          </div>
         </section>
 
         <section class="doc-section" id="actions" data-title="Actions">
           <div class="section-kicker">Messages</div>
           <h2>Top Spin actions</h2>
-          <p>Top Spin sends <code>action</code> messages to request an operation from the game FE. Where applicable, the game confirms the result with an event.</p>
+          <p>Top Spin sends <code>action</code> messages to request an operation from the provider game FE. Where applicable, the provider game confirms the result with an event.</p>
           <div class="message-table-wrap">
             <table class="message-table">
               <thead><tr><th>Action</th><th>Expected game behavior</th><th>Confirmation</th></tr></thead>
               <tbody>
+                <tr><td><code>spin</code></td><td>Start a spin.</td><td><code>mode:spin</code></td></tr>
                 <tr><td><code>betDown / betUp</code></td><td>Change bet by one step.</td><td><code>betChange</code></td></tr>
+                <tr><td><code>setBet</code></td><td>Set the bet to the supplied amount.</td><td><code>betChange</code></td></tr>
                 <tr><td><code>updateBalance</code></td><td>Return current balance.</td><td><code>balanceChange</code></td></tr>
                 <tr><td><code>payTable</code></td><td>Toggle paytable visibility.</td><td><code>payTable</code></td></tr>
                 <tr><td><code>overrideMaxBet</code></td><td>Limit maximum available bet.</td><td><code>betChange</code></td></tr>
@@ -460,18 +513,34 @@ window.postMessage(message, "*");</code></pre>
               </tbody>
             </table>
           </div>
+          <div class="code-block compact-code">
+            <div class="code-header"><span>Top Spin → provider game FE · representative values</span><button class="copy-button">Copy</button></div>
+            <pre><code>{"action":{"name":"spin"}}
+{"action":{"name":"betDown"}}
+{"action":{"name":"betUp"}}
+{"action":{"name":"setBet","value":20}}
+{"action":{"name":"updateBalance"}}
+{"action":{"name":"payTable","value":true}}
+{"action":{"name":"overrideMaxBet","value":100}}
+{"action":{"name":"overrideMinBet","value":5}}
+{"action":{"name":"maxBet"}}
+{"action":{"name":"overrideLines","value":5}}
+{"action":{"name":"sound","value":true}}
+{"action":{"name":"music","value":true}}
+{"action":{"name":"leaveGame"}}</code></pre>
+          </div>
         </section>
 
         <section class="doc-section" id="regular-spin" data-title="Regular spin">
           <div class="section-kicker">Game lifecycle</div>
           <h2>Regular spin flow</h2>
-          <p>When a regular spin starts, the game FE sends <code>mode:spin</code> followed by <code>state:spinning</code>.</p>
+          <p>When a regular spin starts, the provider game FE sends <code>mode:spin</code> followed by <code>state:spinning</code>.</p>
           <div class="code-block compact-code">
             <div class="code-header"><span>Spin started</span><button class="copy-button">Copy</button></div>
             <pre><code>{"mode":{"name":"spin","data":{}}}
 {"state":{"name":"spinning","data":{}}}</code></pre>
           </div>
-          <p>If the spin finishes without a win, the game returns to the normal pre-spin state:</p>
+          <p>If the spin finishes without a win, the provider game returns to the normal pre-spin state:</p>
           <div class="code-block compact-code">
             <div class="code-header"><span>No win</span><button class="copy-button">Copy</button></div>
             <pre><code>{"mode":{"name":"ready","data":{}}}
@@ -482,7 +551,7 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="win-flow" data-title="Win flow">
           <div class="section-kicker">Game lifecycle</div>
           <h2>Regular spin win</h2>
-          <p>When a regular spin produces a win, send <code>mode:win</code> and then report the cumulative win with <code>increaseWin</code>. Once the game is ready again, return to <code>mode:ready</code> and <code>state:beforeSpin</code>.</p>
+          <p>When a regular spin produces a win, send <code>mode:win</code> and then report the cumulative win with <code>increaseWin</code>. Once the provider game is ready again, return to <code>mode:ready</code> and <code>state:beforeSpin</code>.</p>
           <div class="code-block">
             <div class="code-header"><span>Game FE → Top Spin</span><button class="copy-button">Copy</button></div>
             <pre><code>{"mode":{"name":"win","data":{}}}
@@ -495,7 +564,7 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="free-games" data-title="Free Games">
           <div class="section-kicker">Game lifecycle</div>
           <h2>Free Games flow</h2>
-          <p>When Free Games are won, the game first reports the win. Once the balance is updated and the first Free Game is ready, enter <code>bonusGame</code> mode and send <code>freeGamesStart</code>.</p>
+          <p>When Free Games are won, the provider game first reports the win. Once the balance is updated and the first Free Game is ready, enter <code>bonusGame</code> mode and send <code>freeGamesStart</code>.</p>
 
           <div class="mini-flow">
             <span>win</span><i>→</i><span>increaseWin</span><i>→</i><span>bonusGame</span><i>→</i><span>freeGamesStart</span>
@@ -507,6 +576,21 @@ window.postMessage(message, "*");</code></pre>
 {"event":{"name":"increaseWin","data":{"value":100}}}
 {"mode":{"name":"bonusGame","data":{}}}
 {"state":{"name":"freeGamesStart","data":{"balance":1000,"totalRoundWin":0}}}</code></pre>
+          </div>
+
+          <h3>Prepare the next Free Game</h3>
+          <p>Before each subsequent Free Game, send <code>freeGamesBeforeSpin</code> with the cumulative round win.</p>
+          <div class="code-block compact-code">
+            <div class="code-header"><span>Before the next Free Game</span><button class="copy-button">Copy</button></div>
+            <pre><code>{"state":{"name":"freeGamesBeforeSpin","data":{"totalRoundWin":100}}}</code></pre>
+          </div>
+
+          <h3>Award additional Free Games</h3>
+          <p>If a Free Game awards more Free Games, send <code>freeGamesMore</code> and include the current cumulative round win before continuing the round.</p>
+          <div class="code-block compact-code">
+            <div class="code-header"><span>Additional Free Games awarded</span><button class="copy-button">Copy</button></div>
+            <pre><code>{"state":{"name":"freeGamesMore","data":{"totalRoundWin":250}}}
+{"state":{"name":"freeGamesBeforeSpin","data":{"totalRoundWin":250}}}</code></pre>
           </div>
 
           <h3>Spin inside Free Games</h3>
@@ -527,7 +611,7 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="balance-updates" data-title="Balance updates">
           <div class="section-kicker">Game lifecycle</div>
           <h2>Balance updates</h2>
-          <p>Each time the game FE updates its balance, it should send a <code>balanceChange</code> event to Top Spin.</p>
+          <p>Each time the provider game FE updates its balance, it should send a <code>balanceChange</code> event to Top Spin.</p>
           <div class="code-block compact-code">
             <div class="code-header"><span>Game FE → Top Spin</span><button class="copy-button">Copy</button></div>
             <pre><code>{"event":{"name":"balanceChange","data":{"value":1000}}}</code></pre>
@@ -549,7 +633,7 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="game-closing" data-title="Game closing">
           <div class="section-kicker">Game lifecycle</div>
           <h2>Game closing</h2>
-          <p>For unconventional or other reasons where the game needs to close, notify Top Spin with <code>gameClosing</code> followed by <code>mode:closed</code>.</p>
+          <p>For unconventional or other reasons where the provider game needs to close, notify Top Spin with <code>gameClosing</code> followed by <code>mode:closed</code>.</p>
           <div class="code-block compact-code">
             <div class="code-header"><span>Game FE → Top Spin</span><button class="copy-button">Copy</button></div>
             <pre><code>{"event":{"name":"gameClosing","data":{}}}
@@ -560,7 +644,7 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="complete-flow" data-title="Complete message flow">
           <div class="section-kicker">Reference</div>
           <h2>Complete regular game flow</h2>
-          <p>This condensed sequence shows the normal lifecycle from game opening through a spin and back to the ready state.</p>
+          <p>This condensed sequence shows the normal lifecycle from provider game opening through a spin and back to the ready state.</p>
 
           <div class="timeline">
             <div class="timeline-item"><span>1</span><div><strong>Initialize</strong><code>mode:init</code></div></div>
@@ -578,14 +662,19 @@ window.postMessage(message, "*");</code></pre>
           <div class="section-kicker">Reference</div>
           <h2>Connection & errors</h2>
           <h3>Disconnect</h3>
+          <p>The provider game enters <code>mode:error</code> on an internet disconnection. The <code>disconnect</code> event is optional.</p>
           <div class="code-block compact-code">
-            <div class="code-header"><span>Internet disconnection</span><button class="copy-button">Copy</button></div>
-            <pre><code>{"mode":{"name":"error","data":{}}}
-{"event":{"name":"disconnect","data":{}}}</code></pre>
+            <div class="code-header"><span>Required error mode</span><button class="copy-button">Copy</button></div>
+            <pre><code>{"mode":{"name":"error","data":{}}}</code></pre>
+          </div>
+          <div class="code-block compact-code">
+            <div class="code-header"><span>Disconnect event <strong class="optional-badge">Optional</strong></span><button class="copy-button">Copy</button></div>
+            <pre><code>{"event":{"name":"disconnect","data":{}}}</code></pre>
           </div>
           <h3>Reconnect</h3>
+          <p>The provider game may send the optional <code>reconnect</code> event when the internet connection is restored.</p>
           <div class="code-block compact-code">
-            <div class="code-header"><span>Internet reconnect</span><button class="copy-button">Copy</button></div>
+            <div class="code-header"><span>Reconnect event <strong class="optional-badge">Optional</strong></span><button class="copy-button">Copy</button></div>
             <pre><code>{"event":{"name":"reconnect","data":{}}}</code></pre>
           </div>
           <div class="callout neutral-callout">
