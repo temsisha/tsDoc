@@ -24,7 +24,6 @@
       <button class="search-trigger" id="searchTrigger" type="button" aria-label="Search documentation">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
         <span>Search documentation...</span>
-        <kbd>⌘ K</kbd>
       </button>
 
       <div class="topbar-actions">
@@ -394,13 +393,15 @@ window.postMessage(message, "*");</code></pre>
   "config": {
     "hitRateInfo": "1:13204807",
     "RTP": "95.13%",
-    "totalBet": 30,
-    "lines": 3,
-    "gameMode": 1,
+    "totalBet": 50,
+    "lines": 5,
+    "gameMode": 4,
     "gameModeData": [
-      { "gameMode": 1, "lines": 1, "bets": [10, 20, 30, 40, 50] },
-      { "gameMode": 1, "lines": 3, "bets": [30, 60, 90, 120, 150] },
-      { "gameMode": 1, "lines": 5, "bets": [50, 100, 150, 200, 250] }
+      { "gameMode": 0, "lines": 1, "bets": [1, 2, 3, 4, 5, 8, 10] },
+      { "gameMode": 1, "lines": 2, "bets": [2, 4, 6, 8, 10, 16, 20] },
+      { "gameMode": 2, "lines": 3, "bets": [3, 6, 9, 12, 15, 24, 30] },
+      { "gameMode": 3, "lines": 4, "bets": [4, 8, 12, 16, 20, 32, 40] },
+      { "gameMode": 4, "lines": 5, "bets": [5, 10, 15, 20, 25, 40, 50] }
     ]
   }
 }</code></pre>
@@ -484,11 +485,11 @@ window.postMessage(message, "*");</code></pre>
 {"event":{"name":"linesChange","data":{"lines":5,"value":100}}}
 {"event":{"name":"splashScreenOpen","data":{}}}
 {"event":{"name":"splashScreenClose","data":{}}}
-{"event":{"name":"payTable","data":{"value":true}}}
-{"event":{"name":"sound","data":{"value":true}}}
-{"event":{"name":"music","data":{"value":true}}}
+{"event":{"name":"payTable","data":{"value":1}}}
+{"event":{"name":"sound","data":{"value":1}}}
+{"event":{"name":"music","data":{"value":0}}}
 {"event":{"name":"gameClosing","data":{}}}
-{"event":{"name":"errorDialog","data":{"value":true}}}</code></pre>
+{"event":{"name":"errorDialog","data":{}}}</code></pre>
           </div>
         </section>
 
@@ -510,7 +511,7 @@ window.postMessage(message, "*");</code></pre>
                 <tr><td><code>maxBet</code></td><td>Set max bet on current line.</td><td><code>betChange</code></td></tr>
                 <tr><td><code>overrideLines</code></td><td>Override possible number of lines.</td><td><code>linesChange</code></td></tr>
                 <tr><td><code>sound / music</code></td><td>Toggle game audio state.</td><td><code>sound / music</code></td></tr>
-                <tr><td><code>leaveGame</code></td><td>Leave the game.</td><td>—</td></tr>
+                <tr><td><code>leaveGame</code></td><td>Leave the game.</td><td><code>gameClosing</code></td></tr>
               </tbody>
             </table>
           </div>
@@ -521,13 +522,13 @@ window.postMessage(message, "*");</code></pre>
 {"action":{"name":"betUp"}}
 {"action":{"name":"setBet","value":20}}
 {"action":{"name":"updateBalance"}}
-{"action":{"name":"payTable","value":true}}
+{"action":{"name":"payTable","data":{"value":1}}}
 {"action":{"name":"overrideMaxBet","value":100}}
 {"action":{"name":"overrideMinBet","value":5}}
 {"action":{"name":"maxBet"}}
 {"action":{"name":"overrideLines","value":5}}
-{"action":{"name":"sound","value":true}}
-{"action":{"name":"music","value":true}}
+{"action":{"name":"sound","data":{"value":1}}}
+{"action":{"name":"music","data":{"value":0}}}
 {"action":{"name":"leaveGame"}}</code></pre>
           </div>
         </section>
@@ -634,7 +635,7 @@ window.postMessage(message, "*");</code></pre>
         <section class="doc-section" id="game-closing" data-title="Game closing">
           <div class="section-kicker">Game lifecycle</div>
           <h2>Game closing</h2>
-          <p>For unconventional or other reasons where the provider game needs to close, notify Top Spin with <code>gameClosing</code> followed by <code>mode:closed</code>.</p>
+          <p>For unconventional or other reasons where the provider game needs to close, or when the provider game receives a <code>leaveGame</code> action from Top Spin, notify Top Spin with <code>gameClosing</code> followed by <code>mode:closed</code>.</p>
           <div class="code-block compact-code">
             <div class="code-header"><span>Game FE → Top Spin</span><button class="copy-button">Copy</button></div>
             <pre><code>{"event":{"name":"gameClosing","data":{}}}
